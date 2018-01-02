@@ -40,7 +40,6 @@ private:
         vector<vector<int>>::iterator subSolutionPtr;
         for(int i = lastUsed + 1; i <= 9 - (k-1) && i < n; ++i){
             subSolutions = combinationSumStep(k - 1, n - i, i);
-            if(i == 1)std::cout << subSolutions.size();
             for(subSolutionPtr = subSolutions.begin(); subSolutionPtr < subSolutions.end(); subSolutionPtr++){
                 subSolutionPtr->insert(subSolutionPtr->begin(),i);
                 sets.push_back(*subSolutionPtr);
