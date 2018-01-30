@@ -1,42 +1,34 @@
-#include <unordered_set>
+/**
+The gray code is a binary numeral system where two successive values differ in only one bit.
 
+Given a non-negative integer n representing the total number of bits in the code, print the sequence of gray code. A gray code sequence must begin with 0.
+
+For example, given n = 2, return [0,1,3,2]. Its gray code sequence is:
+
+00 - 0
+01 - 1
+11 - 3
+10 - 2
+Note:
+For a given n, a gray code sequence is not uniquely defined.
+
+For example, [0,2,3,1] is also a valid gray code sequence according to the above definition.
+
+For now, the judge is able to judge based on one instance of gray code sequence. Sorry about that.
+**/
 class Solution {
-    struct pairAndVal{
-        pair<int,int> coords;
-        int sum;
-        pairAndVal(int sum, pair<int, int>coord): sum(sum),
-            coords(coords){}
-        bool operator<(pairAndVal b){
-            return sum < b.sum;
-        }
-    };
-
 public:
-    vector<pair<int, int>> kSmallestPairs(vector<int>& nums1, vector<int>& nums2, int k) {
-        unordered_set<pair<int, int>> alreadyVisited;
-        priority_queue<pairAndAncestor> minHorizon;
-        vector<pair<int, int>> solution;
-        minHorizon.push_back(pairAndVal(nums1[0] + nums2[0] pair<int,int>(0,0)));
-        pair<int, int> coords;
-        while(solution.size() < k){
-            coords = minHorizon.top().coords;
-            alreadyVisited.push(coords);
-            if(coords[1] + 1 < nums2.length && 
-               (coords[0] == 0 || alreadyVisited.count(pair<int,int>(coords[0] - 1, coords[1] + 1)) != 0)){       
-                minHorizon.push_back(
-                    pairAndVal(nums1[coords[0]] + nums2[coords[1] + 1],
-                        pair<int,int>(coords[0], coords[1]+1)
-                    )
-                );
-            }
-            if(coords[0] + 1 < nums1.length && (coords[1] == 0 || alreadyVisited.count(pair<int,int>(coords[0] + 1, coords[1] - 1) != 0 ))){ 
-                minHorizon.push_back(
-                    pairAndVal(nums1[coords[0] + 1] + nums2[coords[1]],
-                        pair<int,int>(coords[0] + 1, coords[1])
-                    )
-                );
+    vector<int> grayCode(int n) {
+        vector<int> solution;
+        solution.push_back(0);
+        if(n == 0) return solution;
+        solution.push_back(1);
+        bool reverse = true;
+        for(int i = 1; i < n; ++i){
+            for(int j = solution.size()-1; j >= 0; --j){
+                solution.push_back(solution[j] + pow(2, i));
             }
         }
-        return solution;    
+        return solution;
     }
 };
