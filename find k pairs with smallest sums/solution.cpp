@@ -31,8 +31,7 @@ Special thanks to @elmirap and @StefanPochmann for adding this problem and creat
 **/
 
 
-//solution using a priority queue "horizon" and a set to keep track of the closed set
-#include <unordered_set>
+//optimized solution using a priority queue
 struct pairAndVal{
         pair<int,int> coords;
         int sum;
@@ -53,7 +52,8 @@ class Solution {
 public:
     vector<pair<int, int>> kSmallestPairs(vector<int>& nums1, vector<int>& nums2, int k) {
         
-        set<pair<int, int>> alreadyVisited;
+        vector<int> rowMax(nums2.size(), -1);
+        vector<int> colMax(nums1.size(), -1);
         priority_queue<pairAndVal> minHorizon;
         vector<pair<int, int>> solution;
         if(nums1.size() == 0 || nums2.size() == 0) return solution;
@@ -62,25 +62,28 @@ public:
         while(solution.size() < k && minHorizon.size() > 0){
             coords = minHorizon.top().coords;
             minHorizon.pop();
-            alreadyVisited.insert(coords);
             solution.push_back(pair<int,int>(nums1[coords.first], nums2[coords.second]));
             if(coords.second + 1 < nums2.size() && 
-                (coords.first == 0 || alreadyVisited.count(pair<int,int>(coords.first - 1, coords.second + 1)) != 0)
+                (coords.first == 0 || rowMax[coords.second + 1] == coords.first - 1)
             ){       
                 minHorizon.push(
                     pairAndVal(nums1[coords.first] + nums2[coords.second + 1],
                         pair<int,int>(coords.first, coords.second+1)
                     )
                 );
+                colMax[coords.first] += 1;
+                rowMax[coords.second + 1] += 1;
             }
             if(coords.first + 1 < nums1.size() && 
-                (coords.second == 0 || alreadyVisited.count(pair<int,int>(coords.first + 1, coords.second - 1)) !=0)
+                (coords.second == 0 || colMax[coords.first + 1] == coords.second - 1 )
             ){ 
                 minHorizon.push(
                     pairAndVal(nums1[coords.first + 1] + nums2[coords.second],
                         pair<int,int>(coords.first + 1, coords.second)
                     )
                 );
+                rowMax[coords.second] += 1;
+                colMax[coords.first + 1] += 1;
             }
         }
         return solution;    
